@@ -1,26 +1,29 @@
 package com.testingTutorial.noteManagerApi.service;
 
 import com.testingTutorial.noteManagerApi.model.Note;
+import com.testingTutorial.noteManagerApi.repository.NoteRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
+import static org.mockito.Mockito.*;
 
+
+@ExtendWith(MockitoExtension.class)
 public class NoteServiceTest {
 
-    private final NoteService noteService = new NoteService();
+    @Mock
+    private NoteRepository noteRepository;
 
-    @BeforeAll
-     public static void count() {
-        int c = 0;
-        for (int i = 1; i < 10; i++) {
-            c = c + i;
-        }
-        System.out.println(c);
-    }
+    @InjectMocks
+    private NoteService noteService;
 
     @Test
-    @Disabled
     void shouldCreateNoteSuccessfully() {
         Note note = new Note(
                 1L,
@@ -28,17 +31,12 @@ public class NoteServiceTest {
                 "Testing content"
         );
 
-        Note saved = noteService.createNote(note);
+        when(noteRepository.save(note)).thenReturn(note);
+        Note result=noteService.createNote(note);
 
-        Assertions.assertNotNull(saved);
-        Assertions.assertEquals("Test", saved.getTitle());
-        Assertions.assertEquals("Testing content", saved.getContent(), "Fail");
-
-        System.out.println(note);
+        Assertions.assertEquals("Test",result.getTitle());
+        verify(noteRepository,times(1)).save(note);
     }
 
-    @AfterAll
-     public static void present() {
-        System.out.println(new Date());
-    }
+
 }

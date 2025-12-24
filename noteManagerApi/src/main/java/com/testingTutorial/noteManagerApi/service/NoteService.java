@@ -1,21 +1,20 @@
 package com.testingTutorial.noteManagerApi.service;
 
 import com.testingTutorial.noteManagerApi.model.Note;
+import com.testingTutorial.noteManagerApi.repository.NoteRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
+@RequiredArgsConstructor
 public class NoteService {
-    private final Map<Long, Note> notes=new HashMap<>();
+    private final NoteRepository noteRepository;
 
     public Note createNote(Note note){
-        notes.put(note.getId(),note);
-        return note;
+        return noteRepository.save(note);
     }
 
     public Note getNote(Long id){
-        return notes.get(id);
+        return noteRepository.findById(id);
     }
 }
