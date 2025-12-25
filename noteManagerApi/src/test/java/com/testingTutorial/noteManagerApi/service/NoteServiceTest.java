@@ -2,14 +2,11 @@ package com.testingTutorial.noteManagerApi.service;
 
 import com.testingTutorial.noteManagerApi.model.Note;
 import com.testingTutorial.noteManagerApi.repository.NoteRepository;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Date;
 
 import static org.mockito.Mockito.*;
 
@@ -36,6 +33,28 @@ public class NoteServiceTest {
 
         Assertions.assertEquals("Test",result.getTitle());
         verify(noteRepository,times(1)).save(note);
+    }
+
+    // ---------- getNote() (success case) ----------
+
+    @Test
+    void shouldReturnNoteWhenIdExists() {
+        // Arrange
+        Long id = 1L;
+        Note note = new Note(id, "Test", "Testing content");
+        when(noteRepository.findById(id)).thenReturn(note);
+
+        // Act
+        Note result = noteService.getNote(id);
+
+        // Assert
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(id, result.getId());
+        Assertions.assertEquals("Test", result.getTitle());
+
+        verify(noteRepository, times(1)).findById(id);
+        verifyNoMoreInteractions(noteRepository);
+
     }
 
 
